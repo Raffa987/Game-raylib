@@ -49,6 +49,7 @@ int main() {
     int textWidth = MeasureText("Clicca per iniziare", textDimension);
 
 	while (!exitWindow) {
+        bool lostInThisFrame = false;
 
         if (WindowShouldClose() || IsKeyPressed(KEY_ESCAPE)) exitWindowRequested = true;
 
@@ -111,27 +112,35 @@ int main() {
 
                 if (points >= 10) {
                     isGameWon = true;
-                    DrawText("You Won!", (WINDOW_WIDTH / 2 - MeasureText("You Won!", textDimension)/ 2), (WINDOW_HEIGHT / 8), textDimension, BLACK);
-                    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                        points = 0;
-                        Health = 3;
-                        isGameWon = false;
-                        isGameStarted = false;
-                    }
+                    lostInThisFrame = true;
+                    
                 }
                 else if (Health <= 0) {
                     isGameLost = true;
-                    DrawText("You Lost!", (WINDOW_WIDTH / 2 - MeasureText("You Lost!", textDimension) / 2), (WINDOW_HEIGHT / 8), textDimension, BLACK);
-                    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-                        Health = 3;
-                        points = 0;
-                        isGameLost = false;
-                        isGameStarted = false;
-                    }
+                    lostInThisFrame = true;
                 }
 
             }
           
+        }
+        if (isGameLost && !lostInThisFrame){
+            DrawText("You Lost!", (WINDOW_WIDTH / 2 - MeasureText("You Lost!", textDimension) / 2), (WINDOW_HEIGHT / 8), textDimension, BLACK);             
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                Health = 3;
+                points = 0;
+                isGameLost = false;
+                isGameStarted = false;
+            }
+
+        }
+        if (isGameWon && !lostInThisFrame) {
+            DrawText("You Won!", (WINDOW_WIDTH / 2 - MeasureText("You Won!", textDimension) / 2), (WINDOW_HEIGHT / 8), textDimension, BLACK);
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                points = 0;
+                Health = 3;
+                isGameWon = false;
+                isGameStarted = false;
+            }
         }
 
         EndDrawing();
